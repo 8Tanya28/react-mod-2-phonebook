@@ -4,17 +4,20 @@ import shortid from 'shortid';
 import Form from './components/Form';
 import ContactsList from './components/ContactsList';
 import { contacts } from './components/ContactsList/contacts.js';
+
 console.log(contacts);
+
 class App extends Component {
   state = {
     contacts,
+    filter: '',
   };
 
-  deleteContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id != contactId),
-    }));
-  };
+  // deleteContact = contactId => {
+  //   this.setState(prevState => ({
+  //     contacts: prevState.contacts.filter(contact => contact.id != contactId),
+  //   }));
+  // };
   // toggleRecorded = contactId => {
   //   console.log(contactId);
   //   // this.setState(prevState => ({
@@ -36,20 +39,38 @@ class App extends Component {
   //   }));
   // };
 
-  formSubmitHendler = text => {
-    // setTimeout(()=>{
-    console.log(text);
-    // }, 1000 )
+  // nameId = shortid.generate();
 
-    const newContact = {
-      id: shortid.generate(),
-      text,
-      recorded: false,
-    };
+  formSubmitHendler = data => {
+    this.repeatControl(data);
+  };
 
-    this.setState(({ contacts }) => ({
-      contacts: [newContact, ...contacts],
-    }));
+  repeatControl = data => {
+    let nameArray = [];
+    nameArray = this.state.contacts.map(cur => cur.name);
+    if (!nameArray.includes(data.name)) {
+      let arrayCont = [];
+      arrayCont = [
+        ...this.state.contacts,
+        { id: shortid.generate(), name: data.name, number: data.phone },
+      ];
+      return this.setState({ ...this.state, contacts: arrayCont });
+    } else {
+      alert(' Контакт вже є у телефонній книзі!!!');
+    }
+  };
+
+  delitEl = (arr, idContact) => {
+    let newArr = arr.filter(elem => elem.id !== idContact);
+    return newArr;
+  };
+
+  deleteContact = idContact => {
+    let newArrAfterDel = this.delitEl(this.state.contacts, idContact);
+    this.setState({
+      ...this.state,
+      contacts: [...newArrAfterDel],
+    });
   };
 
   render() {
@@ -58,10 +79,10 @@ class App extends Component {
       <div>
         <h1>PHONEBOOK</h1>
         <Form onSubmit={this.formSubmitHendler} />
+        <h2>CONTACTS</h2>
         <ContactsList
           contacts={contacts}
           onDeleteContact={this.deleteContact}
-          // onToggleRecorded={this.toggleRecorded}
         />
       </div>
     );

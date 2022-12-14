@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import s from './Form.module.css';
 import shortid from 'shortid';
+import PropTypes from 'prop-types';
 
 class Form extends Component {
   state = {
-    contacts: [],
+    // contacts: [],
     name: '',
     phone: '',
     priority: 'hight',
@@ -20,18 +22,18 @@ class Form extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    let data = { text: this.state.name, phone: this.state.phone };
+    let data = { name: this.state.name, phone: this.state.phone };
     this.props.onSubmit(data);
     this.reset();
+  };
+
+  reset = () => {
+    this.setState({ name: '', phone: '' });
   };
 
   hendleConsentChange = e => {
     console.log(e.currentTarget.checked);
     this.setState({ consent: e.currentTarget.checked });
-  };
-
-  reset = () => {
-    this.setState({ name: '', phone: '' });
   };
 
   render() {
@@ -42,6 +44,9 @@ class Form extends Component {
           <input
             type="text"
             name="name"
+            // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            // title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+            // required
             value={this.state.name}
             onChange={this.handleChange}
             id={this.nameInputId}
@@ -110,4 +115,9 @@ class Form extends Component {
     );
   }
 }
+
+Form.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+
 export default Form;

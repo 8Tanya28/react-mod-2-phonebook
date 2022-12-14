@@ -1,24 +1,44 @@
-import React from 'react';
+import React, { Component } from 'react';
 import s from './ContactsList.module.css';
-import Form from '../../components/Form';
+import shortid from 'shortid';
+import PropTypes from 'prop-types';
+// import Form from '../../components/Form';
 
-const ContactsList = ({ contacts, onDeleteContact }) => {
-  return (
-    <ul className={s.contactsList}>
-      {contacts.map(({ id, text, phone, recorded }) => (
-        <li key={id} className={s.contact}>
-          {/* <input type="checkbox" checked={recorded} 
-          onChange={()=>onToggleRecorded(id)} /> */}
-          <p className={s.text}>
-            {text} : {phone}
-          </p>
-          <button type="button" onClick={() => onDeleteContact(id)}>
+class ContactsList extends Component {
+  deleteId = Id => {
+    this.props.onDeleteContact(Id);
+  };
+
+  contactId = shortid.generate();
+
+  createList = () => {
+    return this.props.contacts.map(contact => {
+      return (
+        <li key={this.contactId} id={contact.id} className={s.contact}>
+          {`${contact.name} : ${contact.phone}`}
+          <button
+            type="button"
+            id={contact.id}
+            onClick={() => this.deleteId(contact.id)}
+          >
             Delete
           </button>
         </li>
-      ))}
-    </ul>
-  );
+      );
+    });
+  };
+
+  render() {
+    return <ul>{this.createList()}</ul>;
+  }
+}
+
+ContactsList.propTypes = {
+  contacts: PropTypes.array.isRequired,
+  onDeleteContact: PropTypes.func.isRequired,
+};
+ContactsList.defaultProps = {
+  contacts: [],
 };
 
 export default ContactsList;
