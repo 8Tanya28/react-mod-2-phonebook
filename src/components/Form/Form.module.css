@@ -1,0 +1,19 @@
+.form{
+    display: inline-block;
+    padding-top: 20px;
+    margin: 20px;
+    width: 500px;
+    height: 120px;
+    border: 3px solid rgb(42, 27, 176);
+    border-radius: 10px;
+    }
+
+.label{
+    color:rgb(111, 97, 205);
+    font-weight: bold;
+    margin-right: 10px;
+}
+.input{
+    margin-bottom: 10px;
+    margin-right: 10px;
+}

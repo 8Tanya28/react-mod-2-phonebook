@@ -2,43 +2,38 @@ import React, { Component } from 'react';
 import s from './ContactsList.module.css';
 import shortid from 'shortid';
 import PropTypes from 'prop-types';
-// import Form from '../../components/Form';
 
-class ContactsList extends Component {
-  deleteId = Id => {
-    this.props.onDeleteContact(Id);
-  };
-
-  contactId = shortid.generate();
-
-  createList = () => {
-    return this.props.contacts.map(contact => {
-      return (
-        <li key={this.contactId} id={contact.id} className={s.contact}>
-          {`${contact.name} : ${contact.phone}`}
+const ContactsList = ({ contacts, deleteContact }) => {
+  // console.log(deleteContact);
+  return (
+    <div className={s.contactsList}>
+      <h2 className={s.text}>CONTACTS</h2>
+      {contacts.map(contact => (
+        <li className={s.contact} key={contact.id}>
+          {contact.name} : {contact.number}{' '}
           <button
-            type="button"
-            id={contact.id}
-            onClick={() => this.deleteId(contact.id)}
+            type="buttun"
+            onClick={() => {
+              deleteContact(contact.id);
+            }}
           >
             Delete
           </button>
         </li>
-      );
-    });
-  };
-
-  render() {
-    return <ul>{this.createList()}</ul>;
-  }
-}
-
-ContactsList.propTypes = {
-  contacts: PropTypes.array.isRequired,
-  onDeleteContact: PropTypes.func.isRequired,
+      ))}
+    </div>
+  );
 };
-ContactsList.defaultProps = {
-  contacts: [],
+
+ContactsList.prototype = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      number: PropTypes.string,
+    })
+  ),
+  deleteContact: PropTypes.func,
 };
 
 export default ContactsList;

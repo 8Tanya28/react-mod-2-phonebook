@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import './App.css';
+import s from './App.css';
 import shortid from 'shortid';
 import Form from './components/Form';
 import ContactsList from './components/ContactsList';
+import Filter from './components/Filter';
+import { PropTypes } from 'prop-types';
 import { contacts } from './components/ContactsList/contacts.js';
 
-console.log(contacts);
+const contactId = shortid.generate();
 
 class App extends Component {
   state = {
@@ -13,80 +15,76 @@ class App extends Component {
     filter: '',
   };
 
-  // deleteContact = contactId => {
-  //   this.setState(prevState => ({
-  //     contacts: prevState.contacts.filter(contact => contact.id != contactId),
-  //   }));
-  // };
-  // toggleRecorded = contactId => {
-  //   console.log(contactId);
-  //   // this.setState(prevState => ({
-  //   //   contacts: prevState.contacts.map(contact => {
-  //   //     if (contact.id === contactId) {
-  //   //       console.log('find');
-  //   //       return { ...contact, recorded: !contact.recorded };
-  //   //     }
-  //   //     return contact;
-  //   //   }),
-  //   // }));
+  onSubmitHendler = data => {
+    const contact = {
+      id: contactId,
+      name: data.name,
+      number: data.number,
+    };
 
-  //   this.setState(({ contacts }) => ({
-  //     contacts: contacts.map(contact =>
-  //       contact.id === contactId
-  //         ? { ...contact, recorded: !contact.recorded }
-  //         : contact
-  //     ),
-  //   }));
-  // };
+    const contactName = [];
 
-  // nameId = shortid.generate();
-
-  formSubmitHendler = data => {
-    this.repeatControl(data);
-  };
-
-  repeatControl = data => {
-    let nameArray = [];
-    nameArray = this.state.contacts.map(cur => cur.name);
-    if (!nameArray.includes(data.name)) {
-      let arrayCont = [];
-      arrayCont = [
-        ...this.state.contacts,
-        { id: shortid.generate(), name: data.name, number: data.phone },
-      ];
-      return this.setState({ ...this.state, contacts: arrayCont });
-    } else {
-      alert(' Контакт вже є у телефонній книзі!!!');
+    for (const contact of this.state.contacts) {
+      contactName.push(contact.name);
     }
+
+    if (contactName.includes(contact.name)) {
+      alert(`${contact.name} is already in contacts list`);
+      return;
+    }
+
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, contact],
+    }));
   };
 
-  delitEl = (arr, idContact) => {
-    let newArr = arr.filter(elem => elem.id !== idContact);
-    return newArr;
+  filterName = event => {
+    console.log(event.currentTarget.value);
+    this.setState({ filter: event.currentTarget.value });
   };
 
-  deleteContact = idContact => {
-    let newArrAfterDel = this.delitEl(this.state.contacts, idContact);
-    this.setState({
-      ...this.state,
-      contacts: [...newArrAfterDel],
-    });
+  delete = contactId => {
+    // console.log(contactId);
+
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+    }));
   };
 
   render() {
-    // const { contacts } = this.state;
+    const filterNormilized = this.state.filter.toLowerCase().trim();
+    const visibleContacts = this.state.contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filterNormilized)
+    );
+
     return (
-      <div>
-        <h1>PHONEBOOK</h1>
-        <Form onSubmit={this.formSubmitHendler} />
-        <h2>CONTACTS</h2>
-        <ContactsList
-          contacts={contacts}
-          onDeleteContact={this.deleteContact}
-        />
-      </div>
+      <>
+        <div className={s.container}>
+          <h1>PHONEBOOK</h1>
+          <Form onSubmitForm={this.onSubmitHendler} />
+          <Filter value={this.state.filter} onChengeFilter={this.filterName} />
+          <ContactsList
+            contacts={visibleContacts}
+            deleteContact={this.delete}
+          />
+        </div>
+      </>
     );
   }
 }
+
+App.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      number: PropTypes.string,
+    })
+  ),
+  filter: PropTypes.string,
+  onSubmitHendler: PropTypes.func,
+  delete: PropTypes.func,
+  filterName: PropTypes.func,
+};
 
 export default App;
