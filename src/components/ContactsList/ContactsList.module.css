@@ -1,0 +1,23 @@
+.contactsList{
+    width: 500px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: rgb(237, 156, 237);
+    border: 2px solid rgb(88, 6, 88);
+    border-radius: 10px;
+    box-shadow: 0px 1px 3px rgb(0 0 0 / 12%), 0px 1px 1px rgb(0 0 0 / 14%), 0px 2px 1px rgb(0 0 0 / 20%);
+}
+
+.contact{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.text{
+    color: rgb(94, 6, 97);
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 10px;
+}
